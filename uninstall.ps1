@@ -83,8 +83,8 @@ if (Test-Path $SettingsPath) {
     $Kept = @()
     $InSection = $false
     foreach ($Line in $Settings) {
-      if ($Line -match '^chat-background:') { $InSection = true; continue }
-      if ($InSection -and $Line -match '^\S') { $InSection = false }
+      if ($Line -match '^chat-background:') { $InSection = $true; continue }
+      if ($InSection -and $Line -match '^\S') { $InSection = $false }
       if (-not $InSection) { $Kept += $Line }
     }
     while ($Kept.Count -gt 0 -and $Kept[$Kept.Count - 1] -eq '') { $Kept = $Kept[0..($Kept.Count - 2)] }

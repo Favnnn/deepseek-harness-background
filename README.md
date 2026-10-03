@@ -2,7 +2,7 @@
 
 Per-chat background photos for the DeepSeek Harness web GUI. Once you open a chat, its header (title / model / folder / session log row) gains a small button — it opens the background window for **this chat**: pick a photo (shown whole, never upscaled — native quality), drag the frame into a good composition, zoom, dim or lighten it (left = darker, right = lighter), choose the font color — a light color flips the entire UI to its dark Appearance scheme, a dark color to the light one (independent of the Appearance setting), and the text itself takes the exact chosen color. The shell (session list, chat column, header) clears its own background in favor of the photo; inner card surfaces turn to translucent glass. A chat without a photo keeps the ordinary system background. The background window itself carries the panel-glass slider (global, persisted to settings); Settings → Plugins keeps the enable switch and the card language (Auto/EN/RU); the toggle applies live, no restart.
 
-Plugin version: **1.10.0**.
+Plugin version: **1.11.3**.
 
 > **Languages / Языки:** English first, the Russian original follows after the divider.
 
@@ -78,6 +78,7 @@ The master folder is left untouched. Restart `pnpm dsh web` afterwards — the s
 - **The photo uploads but nothing changes.** The host route is alive only while the web server runs the installed host half — restart `pnpm dsh web` once after the first install.
 - **I changed client.js / host.mjs in the master folder, nothing changed.** Run `install.ps1` again (the master is not read at runtime) and refresh the page.
 - **Text hard to read over a bright photo.** Raise «Panels over the photo» in the chat's background window, drag the «Dim / lighten» slider toward dim, or pick a font color that contrasts with the photo.
+- **Settings → Plugins is empty / React error #130 in the console.** A harness update removed a UI primitive some plugin card used. This plugin no longer depends on any: the toggle is a local `button[role=switch]` styled with `--dsw-*` tokens; a failing registration disables only itself (the exact `dsh-background:` reason lands in the console), and the host side is guarded the same way — watcher re-runs treat "already registered/duplicate" as success.
 
 ---
 
@@ -131,3 +132,4 @@ powershell -ExecutionPolicy Bypass -File uninstall.ps1
 - **Кнопка не появилась.** F5; не помогло — один раз перезапустите `pnpm dsh web`. Проверьте `http://127.0.0.1:3080/chat-background/stats` (должен быть JSON).
 - **Фото загрузилось, но фон не изменился.** Значит host-маршруты ещё не живы — перезапустите сервер один раз после первой установки.
 - **Менял файлы в мастер-папке — ничего не поменялось.** Это ожидаемо: запустите `install.ps1` заново и обновите страницу.
+- **Settings → Plugins пустая / React error #130 в консоли.** Обновление harness удалило UI-примитив, который использовала какая-то карточка плагина. Этот плагин ни от каких не зависит: переключатель — локальный `button[role=switch]` в токенах `--dsw-*`; упавшая регистрация выключает только саму себя (точная причина — в консоли с префиксом `dsh-background:`), host-половина защищена так же — повторные прогоны вотчера считают «already registered/duplicate» успехом.

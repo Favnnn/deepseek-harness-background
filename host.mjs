@@ -390,6 +390,18 @@ function handleRequest(req, res) {
 
 // ─── plugin ──────────────────────────────────────────────────────────────────
 
+/** Watcher re-runs re-apply the patch layer: these are successes, not errors. */
+const IDEMPOTENT_ERROR_RE = /already registered|duplicate|in use/i
+
+function logApplyIssue(ctx, scope, error) {
+  const message = error && error.message ? error.message : String(error)
+  try {
+    ctx.logger?.warn?.('chat-background: %s skipped (%s) — the plugin starts without it', scope, message)
+  } catch {
+    /* logger unavailable */
+  }
+}
+
 /**
  * Plugin body: register the `chat-background` settings section and the
  * `/chat-background` state/image routes on the web server.
@@ -397,33 +409,53 @@ function handleRequest(req, res) {
  * @param {{ enabled?: boolean, panelTransparency?: number } | undefined} config - patch row `config`.
  */
 export function apply(ctx, config) {
+  // Fail-loud harness: a throwing apply can fail the whole boot, so every
+  // registration is isolated — a broken piece only disables itself.
+  try {
+    applyBackground(ctx, config)
+  } catch (error) {
+    logApplyIssue(ctx, 'apply', error)
+  }
+}
+
+function applyBackground(ctx, config) {
   const resolved = resolveChatBackgroundSection(config ?? {})
   Object.assign(pluginState, resolved)
 
   // The settings service may mount after this row (file:// inserts run early
   // in the layer); wait for it reactively, same lesson as the sibling plugins.
   const registerSection = (settingsCtx) => {
-    settingsCtx.settings.installSection(settingsCtx, 'chat-background', createChatBackgroundSchema(), {
-      enabled: pluginState.enabled,
-      panelTransparency: pluginState.panelTransparency,
-      language: pluginState.language,
-    }, {
-      setSource: (current) => {
-        Object.assign(pluginState, resolveChatBackgroundSection(current))
-      },
-      onChange: () => {
-        ctx.logger?.debug?.('chat-background: enabled=%s panelTransparency=%s language=%s', pluginState.enabled, pluginState.panelTransparency, pluginState.language)
-      },
-    })
+    try {
+      settingsCtx.settings.installSection(settingsCtx, 'chat-background', createChatBackgroundSchema(), {
+        enabled: pluginState.enabled,
+        panelTransparency: pluginState.panelTransparency,
+        language: pluginState.language,
+      }, {
+        setSource: (current) => {
+          Object.assign(pluginState, resolveChatBackgroundSection(current))
+        },
+        onChange: () => {
+          ctx.logger?.debug?.('chat-background: enabled=%s panelTransparency=%s language=%s', pluginState.enabled, pluginState.panelTransparency, pluginState.language)
+        },
+      })
+    } catch (error) {
+      if (IDEMPOTENT_ERROR_RE.test(error && error.message ? error.message : String(error))) return
+      logApplyIssue(ctx, 'settings section', error)
+    }
   }
   if (ctx.get('settings') !== undefined) registerSection(ctx)
   else ctx.inject(['settings'], registerSection)
 
   const registerRoutes = (webCtx) => {
-    webCtx.effect(
-      () => webCtx.webServer.register({ kind: 'prefix', path: '/chat-background', handler: handleRequest }),
-      'chat-background: state and image routes',
-    )
+    try {
+      webCtx.effect(
+        () => webCtx.webServer.register({ kind: 'prefix', path: '/chat-background', handler: handleRequest }),
+        'chat-background: state and image routes',
+      )
+    } catch (error) {
+      if (IDEMPOTENT_ERROR_RE.test(error && error.message ? error.message : String(error))) return
+      logApplyIssue(ctx, 'routes', error)
+    }
   }
   if (ctx.get('webServer') === undefined) ctx.inject(['webServer'], registerRoutes)
   else registerRoutes(ctx)
