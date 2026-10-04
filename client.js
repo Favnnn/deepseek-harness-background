@@ -8,7 +8,7 @@ window.__ModuleLoader__.load({
 		let store = require("@deepseek-ai/dsh-client-store");
 
 		//#region stylesheet
-		const css = ".cbg-layer{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;display:none}.dsh-chatbg-on .cbg-layer{display:block}body.dsh-chatbg-on{background:transparent}.cbg-layerImg{position:absolute;inset:0;width:100%;height:100%;object-fit:scale-down;will-change:transform;user-select:none;-webkit-user-drag:none}body.dsh-chatbg-on .cbg-layer{background-color:var(--dsw-static-neutral-bluish-00)}body.dsh-chatbg-on[data-ds-dark-theme] .cbg-layer{background-color:var(--dsw-static-neutral-bluish-950)}body.dsh-chatbg-on .cbg-layer.cbg-layerLight{background-color:var(--dsw-static-neutral-bluish-00)}body.dsh-chatbg-on .cbg-layer.cbg-layerDark{background-color:var(--dsw-static-neutral-bluish-950)}.cbg-layerScrim{position:absolute;inset:0}.cbg-btn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;box-sizing:border-box;padding:0;border:0;border-radius:8px;background:0 0;color:var(--dsw-alias-label-secondary);cursor:pointer}.cbg-btn:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}.cbg-btn svg{flex:none}.cbg-modal{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.45);pointer-events:auto}.cbg-dialog{position:absolute;display:flex;flex-direction:column;max-width:94vw;max-height:92vh;overflow:hidden;box-sizing:border-box;padding:12px 16px 14px;border:1px solid var(--dsw-alias-border-l3);border-radius:14px;background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-primary);box-shadow:var(--dsw-elevation-prominent)}.cbg-body{flex:0 1 auto;min-height:0;overflow-y:auto;display:flex;flex-direction:column}.cbg-grip{position:absolute;z-index:3;touch-action:none}.cbg-gripE{top:8px;right:0;bottom:8px;width:6px;cursor:ew-resize}.cbg-gripS{left:8px;right:8px;bottom:0;height:6px;cursor:ns-resize}.cbg-gripSe{right:0;bottom:0;width:16px;height:16px;cursor:nwse-resize;border-bottom-right-radius:14px;background:repeating-linear-gradient(-45deg,transparent 0 4px,var(--dsw-alias-label-tertiary) 4px 5px);opacity:.45}.cbg-previewPanels{position:absolute;pointer-events:none}.cbg-previewFrame{position:absolute;pointer-events:none;box-sizing:border-box;border:1.5px dashed var(--dsw-alias-border-l4);box-shadow:0 0 0 100vmax rgba(0,0,0,.28)}.cbg-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex:none;cursor:move;user-select:none;touch-action:none}.cbg-title{margin:0;font-size:14px;font-weight:600;line-height:20px}.cbg-sub{margin:2px 0 0;font-size:12px;line-height:16px;color:var(--dsw-alias-label-tertiary)}.cbg-x{border:0;border-radius:8px;background:0 0;color:var(--dsw-alias-label-tertiary);cursor:pointer;font-size:16px;line-height:20px;padding:2px 8px}.cbg-x:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}.cbg-preview{position:relative;flex:1 1 auto;min-height:140px;margin-top:12px;width:100%;box-sizing:border-box;border:1px solid var(--dsw-alias-border-l2);border-radius:10px;overflow:hidden;background:var(--dsw-alias-bg-layer-3);cursor:grab;touch-action:none;user-select:none}.cbg-previewGrabbing{cursor:grabbing}.cbg-previewStage{position:absolute;left:0;top:0;width:100vw;height:100vh;transform-origin:0 0;pointer-events:none}.cbg-previewImg{position:absolute;inset:0;width:100%;height:100%;object-fit:scale-down;pointer-events:none}.cbg-previewScrim{position:absolute;inset:0;pointer-events:none}.cbg-previewHint{position:absolute;left:8px;bottom:6px;right:8px;font-size:11px;line-height:14px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.9);pointer-events:none}.cbg-rows{display:flex;flex-direction:column;gap:10px;margin-top:12px}.cbg-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.cbg-label{font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary);white-space:nowrap}.cbg-range{flex:1;min-width:120px;accent-color:var(--dsw-alias-brand-primary)}.cbg-value{font-size:12px;line-height:18px;color:var(--dsw-alias-label-tertiary);min-width:48px;text-align:right}.cbg-num{box-sizing:border-box;width:62px;padding:2px 6px;border:1px solid var(--dsw-alias-border-l3);border-radius:6px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font-size:12px;line-height:18px;text-align:right;font-variant-numeric:tabular-nums}.cbg-num:focus{outline:2px solid var(--dsw-alias-border-l3);outline-offset:-1px}.cbg-hex{box-sizing:border-box;width:92px;padding:2px 6px;border:1px solid var(--dsw-alias-border-l3);border-radius:6px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font-size:12px;line-height:18px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.cbg-hex:focus{outline:2px solid var(--dsw-alias-border-l3);outline-offset:-1px}.cbg-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px}.cbg-actions2{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}.cbg-switch{position:relative;display:inline-flex;align-items:center;width:34px;height:20px;flex:none;padding:0;border:1px solid var(--dsw-alias-border-l3);border-radius:10px;background:var(--dsw-alias-interactive-bg-hover);cursor:pointer;transition:background-color .12s linear}.cbg-switchOn{background:#34c759;border-color:transparent}.cbg-switch:disabled{opacity:.5;cursor:default}.cbg-switchKnob{position:absolute;top:2px;left:2px;width:14px;height:14px;box-sizing:border-box;border-radius:50%;background:var(--dsw-alias-bg-layer-2);border:1px solid var(--dsw-alias-border-l3);transition:transform .12s linear}.cbg-switchOn .cbg-switchKnob{transform:translateX(14px);background:#fff;border-color:#fff}.cbg-button{border:1px solid var(--dsw-alias-border-l3);border-radius:8px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font:inherit;font-size:12px;line-height:18px;padding:4px 10px;cursor:pointer}.cbg-button:hover{background:var(--dsw-alias-interactive-bg-hover)}.cbg-buttonPrimary{background:var(--dsw-alias-brand-primary);border-color:transparent;color:var(--dsw-alias-label-primary-foreground)}.cbg-color{width:36px;height:26px;padding:0;border:1px solid var(--dsw-alias-border-l3);border-radius:6px;background:0 0;cursor:pointer}.cbg-error{margin-top:10px;font-size:12px;line-height:16px;color:var(--dsw-alias-state-error-primary)}.cbg-card{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:12px;border:1px solid var(--dsw-alias-border-l3);border-radius:12px}.cbg-cardText{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}.cbg-cardTitle{margin:0;font-size:13px;font-weight:600;line-height:18px;color:var(--dsw-alias-label-primary)}.cbg-cardDesc{margin:0;font-size:12px;line-height:16px;color:var(--dsw-alias-label-tertiary)}.cbg-cardControls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}.cbg-segmented{display:inline-flex;align-items:stretch;border:1px solid var(--dsw-alias-border-l3);border-radius:8px;background:var(--dsw-alias-bg-layer-1);padding:2px;gap:2px}.cbg-seg{border:0;border-radius:6px;background:0 0;color:var(--dsw-alias-label-tertiary);font-size:11px;line-height:18px;padding:1px 8px;cursor:pointer}.cbg-seg:hover{color:var(--dsw-alias-label-primary)}.cbg-segActive{background:var(--dsw-alias-bg-layer-3);color:var(--dsw-alias-label-primary)}";
+		const css = ".cbg-layer{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;display:none}.dsh-chatbg-on .cbg-layer{display:block}body.dsh-chatbg-on{background:transparent}.cbg-layerImg{position:absolute;inset:0;width:100%;height:100%;object-fit:scale-down;will-change:transform;user-select:none;-webkit-user-drag:none}body.dsh-chatbg-on .cbg-layer{background-color:var(--dsw-static-neutral-bluish-00,#f8f9fa)}body.dsh-chatbg-on[data-ds-dark-theme] .cbg-layer{background-color:var(--dsw-static-neutral-bluish-950,#101418)}body.dsh-chatbg-on .cbg-layer.cbg-layerLight{background-color:var(--dsw-static-neutral-bluish-00,#f8f9fa)}body.dsh-chatbg-on .cbg-layer.cbg-layerDark{background-color:var(--dsw-static-neutral-bluish-950,#101418)}.cbg-layerScrim{position:absolute;inset:0}.cbg-btn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;box-sizing:border-box;padding:0;border:0;border-radius:8px;background:0 0;color:var(--dsw-alias-label-secondary);cursor:pointer}.cbg-btn:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}.cbg-btn svg{flex:none}.cbg-modal{position:fixed;inset:0;z-index:90;background:var(--dsw-alias-bg-mask-3,rgba(0,0,0,.48));pointer-events:auto}.cbg-dialog{position:absolute;display:flex;flex-direction:column;max-width:94vw;max-height:92vh;overflow:hidden;box-sizing:border-box;padding:12px 16px 14px;border:1px solid var(--dsw-alias-border-l3);border-radius:14px;background:linear-gradient(var(--dsw-specific-menu,rgba(248,249,250,.97)),var(--dsw-specific-menu,rgba(248,249,250,.97))) var(--dsw-alias-bg-layer-1,#f8f9fa);color:var(--dsw-alias-label-primary);box-shadow:var(--dsw-elevation-prominent)}.cbg-body{flex:0 1 auto;min-height:0;overflow-y:auto;display:flex;flex-direction:column}.cbg-grip{position:absolute;z-index:3;touch-action:none}.cbg-gripE{top:8px;right:0;bottom:8px;width:6px;cursor:ew-resize}.cbg-gripS{left:8px;right:8px;bottom:0;height:6px;cursor:ns-resize}.cbg-gripSe{right:0;bottom:0;width:16px;height:16px;cursor:nwse-resize;border-bottom-right-radius:14px;background:repeating-linear-gradient(-45deg,transparent 0 4px,var(--dsw-alias-label-tertiary) 4px 5px);opacity:.45}.cbg-previewPanels{position:absolute;pointer-events:none}.cbg-previewFrame{position:absolute;pointer-events:none;box-sizing:border-box;border:1.5px dashed var(--dsw-alias-border-l4);box-shadow:0 0 0 100vmax rgba(0,0,0,.28)}.cbg-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex:none;cursor:move;user-select:none;touch-action:none}.cbg-title{margin:0;font-size:14px;font-weight:600;line-height:20px}.cbg-sub{margin:2px 0 0;font-size:12px;line-height:16px;color:var(--dsw-alias-label-tertiary)}.cbg-x{border:0;border-radius:8px;background:0 0;color:var(--dsw-alias-label-tertiary);cursor:pointer;font-size:16px;line-height:20px;padding:2px 8px}.cbg-x:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}.cbg-preview{position:relative;flex:1 1 auto;min-height:140px;margin-top:12px;width:100%;box-sizing:border-box;border:1px solid var(--dsw-alias-border-l2);border-radius:10px;overflow:hidden;background:var(--dsw-alias-bg-layer-3,var(--dsw-alias-bg-layer-1,#f8f9fa));cursor:grab;touch-action:none;user-select:none}.cbg-previewGrabbing{cursor:grabbing}.cbg-previewStage{position:absolute;left:0;top:0;width:100vw;height:100vh;transform-origin:0 0;pointer-events:none}.cbg-previewImg{position:absolute;inset:0;width:100%;height:100%;object-fit:scale-down;pointer-events:none}.cbg-previewScrim{position:absolute;inset:0;pointer-events:none}.cbg-previewHint{position:absolute;left:8px;bottom:6px;right:8px;font-size:11px;line-height:14px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.9);pointer-events:none}.cbg-rows{display:flex;flex-direction:column;gap:10px;margin-top:12px}.cbg-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.cbg-label{font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary);white-space:nowrap}.cbg-range{flex:1;min-width:120px;accent-color:var(--dsw-alias-brand-primary)}.cbg-value{font-size:12px;line-height:18px;color:var(--dsw-alias-label-tertiary);min-width:48px;text-align:right}.cbg-num{box-sizing:border-box;width:62px;padding:2px 6px;border:1px solid var(--dsw-alias-border-l3);border-radius:6px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font-size:12px;line-height:18px;text-align:right;font-variant-numeric:tabular-nums}.cbg-num:focus{outline:2px solid var(--dsw-alias-border-l3);outline-offset:-1px}.cbg-hex{box-sizing:border-box;width:92px;padding:2px 6px;border:1px solid var(--dsw-alias-border-l3);border-radius:6px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font-size:12px;line-height:18px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.cbg-hex:focus{outline:2px solid var(--dsw-alias-border-l3);outline-offset:-1px}.cbg-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px}.cbg-actions2{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}.cbg-button{border:1px solid var(--dsw-alias-border-l3);border-radius:8px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font:inherit;font-size:12px;line-height:18px;padding:4px 10px;cursor:pointer}.cbg-button:hover{background:var(--dsw-alias-interactive-bg-hover)}.cbg-buttonPrimary{background:var(--dsw-alias-brand-primary);border-color:transparent;color:var(--dsw-alias-label-primary-foreground)}.cbg-color{width:36px;height:26px;padding:0;border:1px solid var(--dsw-alias-border-l3);border-radius:6px;background:0 0;cursor:pointer}.cbg-error{margin-top:10px;font-size:12px;line-height:16px;color:var(--dsw-alias-state-error-primary)}.cbg-card{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:12px;border:1px solid var(--dsw-alias-border-l3);border-radius:12px}.cbg-cardText{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}.cbg-cardTitle{margin:0;font-size:13px;font-weight:600;line-height:18px;color:var(--dsw-alias-label-primary)}.cbg-cardDesc{margin:0;font-size:12px;line-height:16px;color:var(--dsw-alias-label-tertiary)}.cbg-configNote{margin:0;font-size:12px;line-height:16px;color:var(--dsw-alias-label-secondary)}.cbg-cardControls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}.cbg-segmented{display:inline-flex;align-items:stretch;border:1px solid var(--dsw-alias-border-l3);border-radius:8px;background:var(--dsw-alias-bg-layer-1);padding:2px;gap:2px}.cbg-seg{border:0;border-radius:6px;background:0 0;color:var(--dsw-alias-label-tertiary);font-size:11px;line-height:18px;padding:1px 8px;cursor:pointer}.cbg-seg:hover{color:var(--dsw-alias-label-primary)}.cbg-segActive{background:var(--dsw-alias-bg-layer-3);color:var(--dsw-alias-label-primary)}";
 		const tagId = "dsh-background/background.css";
 		if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId) + "]") === null) {
 			const tag = document.createElement("style");
@@ -41,12 +41,12 @@ window.__ModuleLoader__.load({
 			"dialog.savePreset": "Save preset",
 			"dialog.loadPreset": "Load preset",
 			"error.offline": "The plugin host routes are not reachable — reload the page or restart the web server once after installing.",
-			"settings.title": "Chat backgrounds",
-			"settings.description": "A header button opens per-chat background settings: photo, framing, dim, font color.",
-			"settings.switch": "Chat background button",
+			"settings.description": "A header button opens per-chat background settings: photo, framing, dim, font color. The plugin switch lives on the Plugins page row.",
 			"settings.transparency": "Panels over the photo",
 			"settings.language": "Language",
 			"settings.languageAuto": "Auto",
+			"settings.loading": "Loading configuration…",
+			"settings.unavailable": "Configuration is unavailable in this session.",
 			"settings.retry": "Retry"
 		};
 		/** Russian dictionary, key-identical to the English source of truth. */
@@ -71,39 +71,17 @@ window.__ModuleLoader__.load({
 			"dialog.savePreset": "Сохранить пресет",
 			"dialog.loadPreset": "Загрузить пресет",
 			"error.offline": "Маршруты плагина недоступны — перезагрузите страницу, а после установки один раз перезапустите web-сервер.",
-			"settings.title": "Фоны чатов",
-			"settings.description": "Кнопка в шапке чата открывает настройки фона: фото, сдвиг кадра, затемнение, цвет шрифта.",
-			"settings.switch": "Кнопка фона в шапке чата",
+			"settings.description": "Кнопка в шапке чата открывает настройки фона: фото, сдвиг кадра, затемнение, цвет шрифта. Выключатель плагина — на странице Плагины, в строке.",
 			"settings.transparency": "Панели поверх фото",
 			"settings.language": "Язык",
 			"settings.languageAuto": "Авто",
+			"settings.loading": "Загрузка конфигурации…",
+			"settings.unavailable": "Конфигурация недоступна в этой сессии.",
 			"settings.retry": "Повторить"
 		};
 		//#endregion
 		//#region lib/types/client/model.js
 		const API = "/chat-background";
-
-		/**
-		 * Local toggle switch. Harness ui-primitives come and go between
-		 * versions (React #130: a destructured component turns undefined and
-		 * the slot boundary swallows the whole card), so the card must not
-		 * depend on one: a plain button[role=switch] dressed in --dsw-* tokens.
-		 */
-		function CbgSwitch(props) {
-			const checked = props.checked === true;
-			return react.createElement("button", {
-				type: "button",
-				role: "switch",
-				"aria-checked": checked,
-				"aria-label": props.label,
-				title: props.label,
-				disabled: props.disabled === true,
-				className: checked ? "cbg-switch cbg-switchOn" : "cbg-switch",
-				onClick: () => {
-					if (props.disabled !== true && typeof props.onChange === "function") props.onChange(!checked);
-				}
-			}, react.createElement("span", { className: "cbg-switchKnob" }));
-		}
 
 		/** Identity selector for snapshot-store hooks. */
 		function identity(value) {
@@ -134,18 +112,12 @@ window.__ModuleLoader__.load({
 			};
 		}
 
-		/** Treat a loading/unavailable scope as the composition default (enabled). */
-		function isEnabled(reader) {
-			return reader.status === "ready" ? (reader.value ? reader.value.enabled !== false : true) : true;
-		}
-
 		const LANG_LIST = ["auto", "en", "ru"];
 
 		function normalizeSection(value) {
-			const enabled = !(value && value.enabled === false);
 			const panelTransparency = Math.round(clampNum(value ? value.panelTransparency : undefined, 30, 0, 85));
 			const language = typeof (value ? value.language : undefined) === "string" && LANG_LIST.indexOf(value.language) >= 0 ? value.language : "auto";
-			return { enabled, panelTransparency, language };
+			return { panelTransparency, language };
 		}
 
 		/** Pick a dictionary for an explicit language; falls back to English. */
@@ -156,7 +128,7 @@ window.__ModuleLoader__.load({
 
 		/** `auto` keeps the seat's page-locale translator; en/ru pin the card language. */
 		function resolveT(reader, seatT) {
-			if (reader.status === "ready") {
+			if (reader !== null && typeof reader === "object" && reader.status === "ready") {
 				const language = normalizeSection(reader.value).language;
 				if (language === "ru" || language === "en") return makeT(language);
 			}
@@ -174,6 +146,43 @@ window.__ModuleLoader__.load({
 		 * `value: null` means "no override — take the settings mirror".
 		 */
 		const tpStore = store.createSnapshotStore({ value: null });
+
+		/**
+		 * rc.2: the viewed session is the row the main view retains
+		 * (`retainedBy.mainView > 0` — the idiom DocumentTitle, the workspace
+		 * browser and the settings root all use). A blank row is the
+		 * New-session plate and counts as no session at all. Never throws.
+		 * @param {{ byId?: Record<string, unknown> }} state - sessions snapshot.
+		 * @returns {string | null} the viewed session id.
+		 */
+		function pickViewedSession(state) {
+			try {
+				if (state === null || typeof state !== "object" || state.byId === undefined || state.byId === null) return null;
+				const rows = Object.values(state.byId);
+				for (const row of rows) {
+					if (row === null || typeof row !== "object") continue;
+					if (row.blank === true) continue;
+					const retained = row.retainedBy !== null && typeof row.retainedBy === "object" ? row.retainedBy : null;
+					const mainView = retained !== null && retained.mainView !== undefined && retained.mainView !== null ? Number(retained.mainView) : 0;
+					if (Number.isFinite(mainView) && mainView > 0) return typeof row.id === "string" ? row.id : null;
+				}
+				return null;
+			} catch {
+				return null;
+			}
+		}
+
+		/**
+		 * The UI shows coverage — "how much the panels sit over the photo",
+		 * 0 = fully see-through … 100 = opaque system panels — while the
+		 * painter's stored glass amount stays in its internal 0..85 units.
+		 */
+		function coverFromTransparency(transparency) {
+			return Math.round((85 - clampNum(transparency, 30, 0, 85)) * 100 / 85);
+		}
+		function transparencyFromCover(cover, fallback) {
+			return Math.round((100 - clampNum(cover, coverFromTransparency(fallback), 0, 100)) * 85 / 100);
+		}
 
 		function loadState() {
 			fetch(API + "/state").then((response) => {
@@ -716,23 +725,25 @@ window.__ModuleLoader__.load({
 		 * layer element and the token layer are removed — the system look returns.
 		 */
 		function BackgroundPainter(props) {
-			const sessions = props.useSessions(identity);
+			// Every dispatch hook is type-checked: the shell may change the hook
+			// roster between versions, and a missing one must degrade to "no
+			// background", never to a crashed slot.
+			const currentId = typeof props.useSessions === "function" ? props.useSessions(pickViewedSession) : null;
 			const background = props.useBackground(identity);
-			const settings = props.useSettings(identity);
+			const config = typeof props.useConfig === "function" ? props.useConfig(identity) : null;
 			const tp = props.useTp(identity);
-			const current = sessions !== null && typeof sessions === "object" ? sessions.current : undefined;
-			const cfg = background.status === "ready" && typeof current === "string" ? background.sessions[current] || null : null;
-			const section = normalizeSection(settings.value);
+			const cfg = background.status === "ready" && typeof currentId === "string" ? background.sessions[currentId] || null : null;
+			const section = config !== null ? normalizeSection(config.value) : { panelTransparency: 30, language: "auto" };
 			// Live drag value wins over the (debounced) settings mirror.
 			const transparency = tp.value === null ? section.panelTransparency : clampNum(tp.value, section.panelTransparency, 0, 85);
 			react.useEffect(() => {
-				if (!section.enabled || background.status !== "ready") {
+				if (background.status !== "ready") {
 					stopPainting();
 					return;
 				}
 				paintIfChanged(cfg, transparency);
 				return undefined;
-			}, [section.enabled, transparency, background.status, current, cfg]);
+			}, [transparency, background.status, currentId, cfg]);
 			react.useEffect(() => () => stopPainting(), []);
 			return null;
 		}
@@ -740,9 +751,8 @@ window.__ModuleLoader__.load({
 		//#region lib/types/client/header-button.js
 		/** The utilities-row button that opens this chat's background dialog. */
 		function BackgroundHeaderButton(props) {
-			const settings = props.useSettings(identity);
-			if (!isEnabled(settings)) return null;
-			const t = resolveT(settings, props.t);
+			const config = typeof props.useConfig === "function" ? props.useConfig(identity) : null;
+			const t = resolveT(config, props.t);
 			return react.createElement("button", {
 				type: "button",
 				className: "cbg-btn",
@@ -757,10 +767,10 @@ window.__ModuleLoader__.load({
 		function BackgroundDialog(props) {
 			const view = props.useView(identity);
 			const background = props.useBackground(identity);
-			const sessions = props.useSessions(identity);
-			const settings = props.useSettings(identity);
+			const sessions = typeof props.useSessions === "function" ? props.useSessions(identity) : null;
+			const config = typeof props.useConfig === "function" ? props.useConfig(identity) : null;
 			const tp = props.useTp(identity);
-			const open = view.open === true && typeof view.sessionId === "string" && isEnabled(settings);
+			const open = view.open === true && typeof view.sessionId === "string";
 			const close = props.actions.closeDialog;
 			react.useEffect(() => {
 				if (!open) return undefined;
@@ -809,20 +819,20 @@ window.__ModuleLoader__.load({
 				return next;
 			});
 			if (!open) return null;
-			const t = resolveT(settings, props.t);
+			const t = resolveT(config, props.t);
 			const sessionId = view.sessionId;
 			const cfg = normalizeCfg(background.sessions[sessionId]);
-			// Panel transparency is global (settings mirror), not per-chat.
-			const section = normalizeSection(settings.value);
-			const tpDisabled = settings.writable !== true;
+			// Panel transparency is global (config mirror), not per-chat.
+			const section = config !== null ? normalizeSection(config.value) : { panelTransparency: 30, language: "auto" };
+			const tpDisabled = config === null || config.writable !== true;
 			// The UI shows coverage — "how much the panels sit over the photo",
 			// 0 = fully see-through … 100 = opaque system panels — while the
 			// painter's stored glass amount stays in its internal 0..85 units.
 			// A live drag (tpStore override) updates the row and the preview
 			// immediately; the debounced settings commit makes it permanent.
 			const transparencyLive = tp.value === null ? section.panelTransparency : clampNum(tp.value, section.panelTransparency, 0, 85);
-			const tpCover = Math.round((85 - transparencyLive) * 100 / 85);
-			const coverToTransparency = (cover) => Math.round((100 - clampNum(cover, tpCover, 0, 100)) * 85 / 100);
+			const tpCover = coverFromTransparency(transparencyLive);
+			const coverToTransparency = (cover) => transparencyFromCover(cover, transparencyLive);
 			// Scheme the preview veil stands on: the palette flip follows the
 			// font tone; with no custom font the page attribute rules.
 			const panelsDark = cfg.fontColor !== null ? isLightColor(cfg.fontColor) : document.body.hasAttribute("data-ds-dark-theme");
@@ -1184,23 +1194,41 @@ window.__ModuleLoader__.load({
 			);
 		}
 		//#endregion
-		//#region lib/types/client/settings-card.js
-		/** Settings → Plugins card: the enable switch and language picker. */
-		function BackgroundSettingsCard(props) {
-			const settings = props.useSettings(identity);
+		//#region lib/types/client/bundle-config.js
+		/**
+		 * Plugins-page configuration (`plugins.bundle.config`, keyed by the
+		 * package name `dsh-background`): the global settings. The enable
+		 * switch is the Plugins row's own native switch in rc.2, so it is not
+		 * repeated here. The config scope is the same reactive face the
+		 * painter reads, so an edit here repaints immediately.
+		 */
+		function BackgroundBundleConfig(props) {
+			// All hooks run unconditionally; branching starts afterwards.
+			const config = typeof props.useConfig === "function" ? props.useConfig(identity) : null;
 			const background = props.useBackground(identity);
-			if (settings.status !== "ready") return null;
-			const t = resolveT(settings, props.t);
-			const section = normalizeSection(settings.value);
-			const disabled = settings.writable !== true;
+			const tp = props.useTp(identity);
+			const [tpDraft, setTpDraft] = react.useState(null);
+			const t = resolveT(config, props.t);
+			if (config !== null && config.status !== "ready") {
+				// A schema-less install (no row config) reads as unavailable.
+				return react.createElement("p", { className: "cbg-configNote" },
+					config.status === "error" ? t("settings.unavailable") : t("settings.loading"));
+			}
+			if (props.view === "summary") {
+				return react.createElement("span", { className: "cbg-configNote" }, t("settings.description"));
+			}
+			const section = config !== null ? normalizeSection(config.value) : { panelTransparency: 30, language: "auto" };
+			const disabled = config === null || config.writable !== true;
+			const transparencyLive = tp.value === null ? section.panelTransparency : clampNum(tp.value, section.panelTransparency, 0, 85);
+			const tpCover = coverFromTransparency(transparencyLive);
+			const coverToTransparency = (cover) => transparencyFromCover(cover, transparencyLive);
 			return react.createElement("div", { className: "cbg-card" },
 				react.createElement("div", { className: "cbg-cardText" },
-					react.createElement("h3", { className: "cbg-cardTitle" }, t("settings.title")),
 					react.createElement("p", { className: "cbg-cardDesc" }, t("settings.description")),
 					background.status === "error" ? react.createElement("p", { className: "cbg-cardDesc" }, t("error.offline")) : null
 				),
 				react.createElement("div", { className: "cbg-cardControls" },
-					background.status === "error" && settings.writable === true ? react.createElement("button", {
+					background.status === "error" ? react.createElement("button", {
 						type: "button",
 						className: "cbg-button",
 						onClick: () => loadState()
@@ -1219,12 +1247,33 @@ window.__ModuleLoader__.load({
 						)
 					),
 					react.createElement("div", { className: "cbg-row", style: { gap: 8 } },
-						react.createElement("span", { className: "cbg-label" }, t("settings.switch")),
-						react.createElement(CbgSwitch, {
-							checked: section.enabled,
-							label: t("settings.switch"),
+						react.createElement("span", { className: "cbg-label" }, t("settings.transparency")),
+						react.createElement("input", {
+							className: "cbg-range",
+							type: "range",
+							min: 0,
+							max: 100,
+							step: 5,
+							value: tpCover,
 							disabled: disabled,
-							onChange: (next) => props.actions.setEnabled(next)
+							title: t("settings.transparency") + " 0–100%",
+							onInput: (event) => props.actions.setTransparencyLive(coverToTransparency(Number(event.target.value)))
+						}),
+						react.createElement("input", {
+							className: "cbg-num",
+							type: "number",
+							min: 0,
+							max: 100,
+							step: 1,
+							value: tpDraft !== null ? tpDraft : tpCover,
+							disabled: disabled,
+							title: t("settings.transparency") + " 0–100%",
+							onChange: (event) => {
+								setTpDraft(event.target.value);
+								const n = Number(event.target.value);
+								if (Number.isFinite(n)) props.actions.setTransparencyLive(coverToTransparency(n));
+							},
+							onBlur: () => setTpDraft(null)
 						})
 					)
 				)
@@ -1233,7 +1282,10 @@ window.__ModuleLoader__.load({
 		//#endregion
 		//#region lib/types/client/index.js
 		const NS = "chat-background";
-		const inject = ["slots", "locale", "settingsScope", "theme"];
+		// rc.2 service roster: `sessions` feeds the viewed-session row scan,
+		// `configForms` is the rc.2 settings face (settingsScope is gone),
+		// `theme` carries overrideTokens for the live glass.
+		const inject = ["sessions", "slots", "locale", "configForms", "theme"];
 		/**
 		 * Client plugin body: dictionaries, the settings scope, the background
 		 * store, and four slot registrations sharing one inject face
@@ -1253,7 +1305,10 @@ window.__ModuleLoader__.load({
 			}
 		}
 		function applyPlugin(ctx) {
-			themeService = ctx.theme;
+			// rc.2 keeps the theme service (token overrides drive the live
+			// glass); a missing or reshaped service only disables the live
+			// drag — the painter still paints with saved values.
+			themeService = ctx.theme !== null && typeof ctx.theme === "object" && typeof ctx.theme.overrideTokens === "function" ? ctx.theme : null;
 			try {
 				ctx.effect(() => ctx.locale.register(NS, { en, ru }), "chat-background: dictionaries");
 				ctx.effect(() => () => {
@@ -1267,7 +1322,13 @@ window.__ModuleLoader__.load({
 					/* console unavailable */
 				}
 			}
-			const scope = ctx.settingsScope.bind({ namespace: NS });
+			// rc.2 settings face: the row's Config (host `Config` export)
+			// mirrors reactively through configForms; the namespace is the
+			// bundle row id. Without the service the plugin degrades to
+			// defaults with controls disabled — it never blocks the page.
+			const scope = typeof ctx.configForms !== "undefined" && ctx.configForms !== null && typeof ctx.configForms.get === "function"
+				? ctx.configForms.get(NS)
+				: { status: "ready", value: {}, writable: false, set: () => {} };
 			loadState();
 			let transparencyTimer = 0;
 			// Dragging coalesces to one visual update per animation frame: the
@@ -1275,9 +1336,6 @@ window.__ModuleLoader__.load({
 			let tpRaf = 0;
 			let tpPending = null;
 			const actions = {
-				setEnabled: (next) => {
-					void scope.set("enabled", next);
-				},
 				setLanguage: (next) => {
 					void scope.set("language", LANG_LIST.indexOf(next) >= 0 ? next : "auto");
 				},
@@ -1366,7 +1424,7 @@ window.__ModuleLoader__.load({
 				}
 			};
 			const face = () => ({
-				hooks: { settings: scope, background: bgStore, view: viewStore, tp: tpStore },
+				hooks: { config: scope, background: bgStore, view: viewStore, tp: tpStore },
 				actions
 			});
 			safeSlot(ctx, "shell.overlay", () => ctx.slots.register({
@@ -1390,17 +1448,16 @@ window.__ModuleLoader__.load({
 				locale: NS,
 				inject: face
 			}, BackgroundHeaderButton));
-			// The slot ledger sorts entries by priority ascending (ties keep
-			// registration order); priority 1 pins this card to the bottom,
-			// deterministically, matching the sibling plugin cards.
-			safeSlot(ctx, "settings.plugin.item", () => ctx.slots.register({
-				name: "settings.plugin.item",
-				key: NS,
-				order: 1000,
-				priority: 1,
+			// rc.2: the Plugins page hosts the bundle's own config directly on
+			// the bundle page, keyed by the PACKAGE NAME (`view` is 'page'
+			// there, 'summary' in the row summary). The row's enable switch is
+			// the page's own native control.
+			safeSlot(ctx, "plugins.bundle.config", () => ctx.slots.register({
+				name: "plugins.bundle.config",
+				key: "dsh-background",
 				locale: NS,
 				inject: face
-			}, BackgroundSettingsCard));
+			}, BackgroundBundleConfig));
 			// Boot canary: counted in the host's /chat-background/stats so the
 			// installed copy's own telemetry answers "did the page run this
 			// bundle" without opening devtools.
@@ -1432,3 +1489,6 @@ window.__ModuleLoader__.load({
 		return module.exports;
 	}
 });
+// republished 2.0.0 (rc.2 port: configForms face, plugins.bundle.config keyed by the package name,
+// viewed session = the mainView-retained row of sessions.list, uiSession-era dispatch hooks guarded,
+// dense-fill dialog over the translucent rc.2 surfaces, mask token for the modal backdrop)

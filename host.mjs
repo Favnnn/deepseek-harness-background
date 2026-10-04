@@ -1,83 +1,113 @@
 /**
- * dsh-background, Host half.
+ * dsh-background, Host half (dsh v0.2.0-rc.2).
+ *
+ * Official-style config: the exported `Config` schema (schemastery, volatile
+ * fields) IS the settings surface — the Plugins page generates its form from
+ * it and the client bundle reads the same values through its configForms
+ * mirror. No installSection, no hand-rolled schema: that API is gone in rc.2.
  *
  * A function plugin importing only Node builtins (bare package imports cannot
  * resolve here: the installed copy lives outside any pnpm tree, while `node:`
- * specifiers always resolve).
+ * specifiers always resolve). The one bare import that matters —
+ * `@deepseek-ai/schemastery` — loads through createRequire with a vendored
+ * CJS fallback in `./deps/` provisioned by install.ps1.
  *
- * Three responsibilities:
- * 1) The `chat-background` settings section — a hand-rolled, schemastery-
- *    compatible node whose `toJSON()` yields the `{ uid, refs }` envelope the
- *    settings provider serializes to the wire (Settings -> Plugins switch
- *    plus the global panel-transparency preference).
+ * Responsibilities:
+ * 1) `Config` — `{ language, panelTransparency }`; every field volatile so a
+ *    Plugins-page edit never reloads this fiber.
  * 2) `/chat-background/*` HTTP routes: per-session background configs stored
  *    in %DSH_HOME%\plugin-data\dsh-background\state.json, uploaded photos
  *    kept as content-addressed files under images\, and the image bytes
  *    served back to the page.
  * 3) Image garbage collection: an image referenced by no surviving session
  *    is deleted when the state that orphaned it is saved.
+ *
+ * Fail-safe: every startup step is contained. If schemastery cannot load the
+ * plugin loses only the Plugins-page form; if the web server is missing the
+ * plugin loses only its routes. The harness boots either way.
  */
 
 import { createHash } from 'node:crypto'
 import { createReadStream, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, statSync, unlinkSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
+import { createRequire } from 'node:module'
 
 export const name = 'chat-background'
 
-// ─── settings ────────────────────────────────────────────────────────────────
+/**
+ * The web server is a hard dependency: declaring it makes this fiber wait
+ * until the service exists, so the `ctx.webServer` property read in `apply`
+ * is legal (property access follows the inject declaration).
+ */
+export const inject = ['webServer']
 
-/** Panel transparency bounds (percent of see-through on shell surfaces). */
-const TRANSPARENCY_MIN = 0
-const TRANSPARENCY_MAX = 85
+/**
+ * Schemastery powers the Config schema. A plugin package outside the harness
+ * tree may not resolve the bare specifier, so both paths are contained and
+ * fully synchronous (createRequire — no top-level await): the bare name
+ * first, then the vendored CJS copy the installer provisions into `./deps/`.
+ * Without either the plugin still runs — it only loses the Plugins-page form
+ * and the client config mirror.
+ */
+const requireFromHere = createRequire(import.meta.url)
+let z = undefined
+try {
+  z = requireFromHere('@deepseek-ai/schemastery')
+} catch {
+  /* fall through to the vendored copy */
+}
+if (z === undefined) {
+  try {
+    z = requireFromHere('./deps/schemastery.cjs')
+  } catch (error) {
+    console.error('chat-background: schemastery unavailable; the plugin runs without the Plugins-page form.', error)
+  }
+}
+
+/**
+ * Plugin configuration. Every field is volatile: the Plugins page edits them
+ * live — the fiber is NOT reloaded on a write, so `apply` holds volatile
+ * references whose `.get()` always returns the current value.
+ *
+ * language           — card copy language; `auto` follows the page locale.
+ * panelTransparency  — internal glass amount 0..85 (0 = opaque panels,
+ *                      85 = fully see-through); the per-chat window shows
+ *                      the friendly inverted 0..100 % scale.
+ */
+export let Config = undefined
+if (z !== undefined) {
+  Config = z.object({
+    language: z.union(['auto', 'en', 'ru']).default('auto').volatile(),
+    panelTransparency: z.number().default(30).volatile(),
+  })
+}
 
 /** Allowed card languages; `auto` follows the page locale. */
 const LANGUAGES = ['auto', 'en', 'ru']
 
 /**
- * Validate and normalize one merged settings candidate. Never throws: the
- * section must not be able to block a harness boot, so an invalid field
- * normalizes to its default instead.
- * @param {unknown} candidate - merged base + user section.
- * @returns {{ enabled: boolean, panelTransparency: number, language: string }} the normalized section.
+ * Read one config value whether it arrived as a volatile reference (rc.2
+ * volatile fields) or a plain value (older loaders, absent schema). Never
+ * throws: a hiccup reads as the fallback.
+ * @param {{ get?: () => unknown } | unknown} value - the config field.
+ * @param {unknown} fallback - default when the value is absent.
+ * @returns {unknown} the current value.
  */
-function resolveChatBackgroundSection(candidate) {
-  if (candidate === undefined || candidate === null || typeof candidate !== 'object' || Array.isArray(candidate)) {
-    return { enabled: true, panelTransparency: 30, language: 'auto' }
+function readConfigValue(value, fallback) {
+  try {
+    if (value !== null && typeof value === 'object' && typeof value.get === 'function') {
+      const current = value.get()
+      return current === undefined ? fallback : current
+    }
+    return value === undefined ? fallback : value
+  } catch {
+    return fallback
   }
-  const enabled = typeof candidate.enabled === 'boolean' ? candidate.enabled : true
-  const raw = typeof candidate.panelTransparency === 'string' ? Number(candidate.panelTransparency) : candidate.panelTransparency
-  let panelTransparency = typeof raw === 'number' && Number.isFinite(raw) ? Math.round(raw) : 30
-  if (panelTransparency < TRANSPARENCY_MIN) panelTransparency = TRANSPARENCY_MIN
-  if (panelTransparency > TRANSPARENCY_MAX) panelTransparency = TRANSPARENCY_MAX
-  const language = typeof candidate.language === 'string' && LANGUAGES.includes(candidate.language) ? candidate.language : 'auto'
-  return { ...candidate, enabled, panelTransparency, language }
 }
 
-/**
- * Build the schemastery-compatible node for `{ enabled, panelTransparency, language }`.
- * @returns {object} callable schema with a wire `toJSON()` envelope.
- */
-function createChatBackgroundSchema() {
-  const envelope = {
-    uid: 0,
-    refs: {
-      0: { type: 'object', meta: {}, dict: { enabled: 1, panelTransparency: 2, language: 3 } },
-      1: { type: 'boolean', meta: { default: true } },
-      2: { type: 'number', meta: { default: 30 } },
-      3: { type: 'string', meta: { default: 'auto' } },
-    },
-  }
-  const schema = (candidate) => resolveChatBackgroundSection(candidate)
-  schema.type = 'object'
-  schema.meta = envelope.refs[0].meta
-  schema.dict = { enabled: envelope.refs[1], panelTransparency: envelope.refs[2], language: envelope.refs[3] }
-  schema.toJSON = () => ({ uid: 0, refs: envelope.refs })
-  return schema
-}
-
-/** Resolved plugin configuration for diagnostics and fallback reads. */
-const pluginState = { enabled: true, panelTransparency: 30, language: 'auto' }
+/** Resolved plugin configuration for diagnostics (/stats) and fallback reads. */
+const pluginState = { panelTransparency: 30, language: 'auto' }
 
 // ─── storage ─────────────────────────────────────────────────────────────────
 
@@ -365,7 +395,7 @@ function handleRequest(req, res) {
         up: Date.now() - bootedAt,
         hits: routeHits,
         sessions: Object.keys(sessions).length,
-        enabled: pluginState.enabled,
+        language: pluginState.language,
         panelTransparency: pluginState.panelTransparency,
       }))
     }
@@ -403,10 +433,13 @@ function logApplyIssue(ctx, scope, error) {
 }
 
 /**
- * Plugin body: register the `chat-background` settings section and the
- * `/chat-background` state/image routes on the web server.
+ * Plugin body: register the `/chat-background` state/image routes on the web
+ * server. Config arrives from the row (volatile fields as live references);
+ * the host itself needs no values — the client bundle reads the same row
+ * through its configForms mirror — but /stats reports the current ones.
  * @param {import('@deepseek-ai/cordis').Context} ctx - host plugin context.
- * @param {{ enabled?: boolean, panelTransparency?: number } | undefined} config - patch row `config`.
+ * @param {Record<string, unknown> | undefined} config - row config; volatile
+ *   fields arrive as live references, plain fields as values.
  */
 export function apply(ctx, config) {
   // Fail-loud harness: a throwing apply can fail the whole boot, so every
@@ -419,49 +452,22 @@ export function apply(ctx, config) {
 }
 
 function applyBackground(ctx, config) {
-  const resolved = resolveChatBackgroundSection(config ?? {})
-  Object.assign(pluginState, resolved)
+  const row = config === null || config === undefined || typeof config !== 'object' ? {} : config
+  pluginState.panelTransparency = readConfigValue(row.panelTransparency, 30)
+  pluginState.language = LANGUAGES.includes(readConfigValue(row.language, 'auto')) ? readConfigValue(row.language, 'auto') : 'auto'
 
-  // The settings service may mount after this row (file:// inserts run early
-  // in the layer); wait for it reactively, same lesson as the sibling plugins.
-  const registerSection = (settingsCtx) => {
-    try {
-      settingsCtx.settings.installSection(settingsCtx, 'chat-background', createChatBackgroundSchema(), {
-        enabled: pluginState.enabled,
-        panelTransparency: pluginState.panelTransparency,
-        language: pluginState.language,
-      }, {
-        setSource: (current) => {
-          Object.assign(pluginState, resolveChatBackgroundSection(current))
-        },
-        onChange: () => {
-          ctx.logger?.debug?.('chat-background: enabled=%s panelTransparency=%s language=%s', pluginState.enabled, pluginState.panelTransparency, pluginState.language)
-        },
-      })
-    } catch (error) {
-      if (IDEMPOTENT_ERROR_RE.test(error && error.message ? error.message : String(error))) return
-      logApplyIssue(ctx, 'settings section', error)
-    }
+  try {
+    ctx.effect(
+      () => ctx.webServer.register({ kind: 'prefix', path: '/chat-background', handler: handleRequest }),
+      'chat-background: state and image routes',
+    )
+  } catch (error) {
+    if (IDEMPOTENT_ERROR_RE.test(error && error.message ? error.message : String(error))) return
+    logApplyIssue(ctx, 'routes', error)
   }
-  if (ctx.get('settings') !== undefined) registerSection(ctx)
-  else ctx.inject(['settings'], registerSection)
-
-  const registerRoutes = (webCtx) => {
-    try {
-      webCtx.effect(
-        () => webCtx.webServer.register({ kind: 'prefix', path: '/chat-background', handler: handleRequest }),
-        'chat-background: state and image routes',
-      )
-    } catch (error) {
-      if (IDEMPOTENT_ERROR_RE.test(error && error.message ? error.message : String(error))) return
-      logApplyIssue(ctx, 'routes', error)
-    }
-  }
-  if (ctx.get('webServer') === undefined) ctx.inject(['webServer'], registerRoutes)
-  else registerRoutes(ctx)
 }
 
-/** Current resolved plugin state (host-side fallback when settings are absent). */
+/** Current resolved plugin state (host-side diagnostics fallback). */
 export function readChatBackgroundState() {
   return { ...pluginState }
 }

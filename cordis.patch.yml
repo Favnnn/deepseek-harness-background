@@ -1,7 +1,11 @@
-# Chat backgrounds - informational copy of the row installed by install.ps1.
-# The live row lives in %DSH_HOME%\profiles\web\cordis.patch.yml and points at
-# the installed copy under %DSH_HOME%\plugins\dsh-background\host.mjs.
+# Chat backgrounds — the bundle row installed by install.ps1 (pnpm pack +
+# `dsh plugin add`). The row id is the client configForms namespace; the
+# `plugins.bundle.config` slot is keyed by the package name `dsh-background`.
+# Defaults mirror a fresh install; install.ps1 may rewrite them from the
+# legacy settings.yaml section before packing so user values survive the port.
 - insert:
-  - name: file:///C:/Users/Vad/.dsh/plugins/dsh-background/host.mjs
+  - id: chat-background
+    name: dsh-background
     config:
-      enabled: true
+      language: auto
+      panelTransparency: 30

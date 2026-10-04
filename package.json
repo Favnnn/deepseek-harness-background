@@ -1,15 +1,23 @@
 {
 	"name": "dsh-background",
-	"version": "1.11.3",
+	"version": "2.0.0",
 	"private": true,
 	"type": "module",
+	"description": "Per-chat photo backgrounds behind the conversation panels (dsh v0.2.0-rc.2).",
+	"files": [
+		"host.mjs",
+		"client.js",
+		"cordis.patch.yml",
+		"deps",
+		"README.md"
+	],
 	"dsh": {
 		"bundle": {
 			"patch": "./cordis.patch.yml"
 		},
 		"client": {
 			"platform": "web",
-			"inject": ["@deepseek-ai/dsh-client-ui-settings-plugins"]
+			"inject": ["@deepseek-ai/dsh-client-locale", "@deepseek-ai/dsh-client-ui-settings"]
 		}
 	},
 	"exports": {
